@@ -2,9 +2,12 @@ name: NodeJS with Grunt
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ['develop']
   pull_request:
-    branches: [ "develop" ]
+    branches: ['develop']
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -12,23 +15,21 @@ jobs:
 
     strategy:
       matrix:
-        # Use the latest version of Node.js, plus the 3 most recent LTS lines
         node-version:
+          - 22
+          - 24
+          - 26
           - latest
-          - lts/*
-          - lts/-1
-          - lts/-2 # Probably EOL depending on release schedules, but still good to test
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Build
-      run: |
-        npm install
-        grunt
-
+      - name: Build
+        run: |
+          npm install
+          grunt
