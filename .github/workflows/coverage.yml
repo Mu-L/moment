@@ -1,16 +1,16 @@
-name: FOSSA
+name: Coverage
 
 on:
   push:
     branches: ['develop']
-  workflow_dispatch:
+  pull_request:
+    branches: ['develop']
 
 permissions:
   contents: read
 
 jobs:
-  license-scan:
-    name: License scan
+  coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +21,10 @@ jobs:
         with:
           cache: true
 
-      - name: Analyze dependencies and test license policy
-        uses: fossas/fossa-action@v2
+      - name: Run coverage
+        run: pnpm test:coverage
+
+      - name: Report coverage to Coveralls
+        uses: coverallsapp/github-action@v2
         with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-          run-tests: true
+          file: coverage/lcov.info

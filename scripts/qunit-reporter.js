@@ -1,19 +1,19 @@
 module.exports = {
-    init: function (QUnit) {
-        var runDetails;
+    init(QUnit) {
+        let runDetails;
 
-        QUnit.on('testEnd', function (test) {
-            test.errors.forEach(function (error) {
+        QUnit.on('testEnd', (test) => {
+            test.errors.forEach((error) => {
                 console.error('\n' + test.fullName.join(' > '));
                 console.error(error.stack || error.message);
             });
         });
 
-        QUnit.on('runEnd', function (run) {
+        QUnit.on('runEnd', (run) => {
             runDetails = run;
         });
 
-        QUnit.done(function (assertions) {
+        QUnit.done((assertions) => {
             console.log('\nGlobal summary:');
             console.log(
                 runDetails.testCounts.total +

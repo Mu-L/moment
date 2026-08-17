@@ -16,36 +16,33 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - lts/-2
-          - lts/-1
           - lts/*
+          - lts/-1
           - latest
 
     steps:
       - uses: actions/checkout@v7
 
+      - name: Use pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Build
-        if: matrix.node-version != 'lts/*'
-        run: |
-          npm install
-          grunt
+        run: pnpm build
 
-      - name: Build with coverage
-        if: matrix.node-version == 'lts/*'
-        run: |
-          npm install
-          npx grunt lint
-          npm run coverage
+      - name: Test
+        run: pnpm test
 
-      - name: Report coverage to Coveralls
-        if: matrix.node-version == 'lts/*'
-        run: |
-          curl -fsSL https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-linux-x86_64.tar.gz | tar -xz
-          ./coveralls report coverage/lcov.info
-        env:
-          COVERALLS_REPO_TOKEN: ${{ github.token }}
+      - name: Test TypeScript declarations
+        run: pnpm test:typescript
