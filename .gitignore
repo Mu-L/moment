@@ -15,3 +15,6 @@ nyc_output
 .vscode/
 .idea
 *.tgz
+package-lock.json
+yarn.lock
+bun.lock
